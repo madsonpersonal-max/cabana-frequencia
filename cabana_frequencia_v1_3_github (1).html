@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cabana Frequência — V1.3</title>
+<style>
+:root{--tc:#c96f52;--tc-dark:#8f4938;--bg:#f7f3f0;--card:#fff;--text:#2b2928;--muted:#716b67;--ok:#2e7d32;--warn:#b26a00;--bad:#b3261e;--border:#e4d8d1}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--tc);color:#fff;padding:20px}.brand{font-size:24px;font-weight:800}.sub{opacity:.9;margin-top:4px}
+nav{display:flex;gap:8px;flex-wrap:wrap;padding:12px;background:#fff;border-bottom:1px solid var(--border)}
+button{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:700}
+nav button,.primary{background:var(--tc);color:#fff}.secondary{background:#eee7e2;color:var(--text)}
+main{max-width:1200px;margin:auto;padding:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 2px 8px #0000000b}
+.kpi{font-size:30px;font-weight:800;margin-top:6px}.muted{color:var(--muted);font-size:13px}
+section{display:none}.active{display:block}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;flex:1;min-width:180px}
+input,select{padding:10px;border:1px solid var(--border);border-radius:8px;background:#fff}
+table{width:100%;border-collapse:collapse;margin-top:15px;background:#fff}
+th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;font-size:11px;font-weight:800}
+.pending{background:#fff1d6;color:var(--warn)}.approved{background:#e5f5e7;color:var(--ok)}.reproved{background:#fde7e6;color:var(--bad)}.blocked{background:#eee;color:#666}
+.alert{padding:12px;border-radius:8px;margin:10px 0;background:#fff7e8;border:1px solid #f0d6a4}
+.small{font-size:12px}.danger{color:var(--bad)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">CABANA CLUBE 40 ANOS</div>
+  <div class="sub">Cabana Frequência — V1.3 • Homologação Fase 1</div>
+</header>
+<nav>
+  <button onclick="show('dashboard')">Dashboard</button>
+  <button onclick="show('alunos')">Alunos</button>
+  <button onclick="show('modalidades')">Modalidades</button>
+  <button onclick="show('professores')">Professores</button>
+  <button onclick="show('turmas')">Turmas</button>
+  <button onclick="show('vinculos')">Vínculos</button>
+  <button onclick="show('testes')">CT-001 a CT-012</button>
+  <button onclick="show('auditoria')">Auditoria</button>
+</nav>
+<main>
+<section id="dashboard" class="active">
+<h2>Fase 1 — Núcleo</h2>
+<div class="grid">
+<div class="card">Alunos ativos<div class="kpi" id="kAlunos">0</div></div>
+<div class="card">Modalidades<div class="kpi" id="kMods">0</div></div>
+<div class="card">Professores<div class="kpi" id="kProfs">0</div></div>
+<div class="card">Turmas ativas<div class="kpi" id="kTurmas">0</div></div>
+<div class="card">Vínculos ativos<div class="kpi" id="kVinc">0</div></div>
+<div class="card">Testes aprovados<div class="kpi" id="kTests">0/12</div></div>
+</div>
+<div class="alert"><b>Regra:</b> Fase 2 só será liberada quando CT-001 a CT-012 estiverem 100% APROVADOS.</div>
+</section>
+
+<section id="alunos">
+<h2>Cadastro de alunos</h2>
+<div class="card"><div class="row">
+<label>Nome<input id="aNome"></label>
+<label>CPF<input id="aCpf"></label>
+<button class="primary" onclick="addAluno()">Cadastrar e gerar matrícula</button>
+</div></div>
+<table><thead><tr><th>Matrícula</th><th>Nome</th><th>CPF</th><th>Status</th><th>Ação</th></tr></thead><tbody id="alunosBody"></tbody></table>
+</section>
+
+<section id="modalidades">
+<h2>Modalidades</h2>
+<div class="card"><div class="row">
+<label>Nome<input id="mNome"></label>
+<button class="primary" onclick="addModalidade()">Cadastrar modalidade</button>
+</div></div>
+<table><thead><tr><th>ID</th><th>Modalidade</th><th>Status</th><th>Ação</th></tr></thead><tbody id="modsBody"></tbody></table>
+</section>
+
+<section id="professores">
+<h2>Professores</h2>
+<div class="card"><div class="row">
+<label>Nome<input id="pNome"></label>
+<label>Login<input id="pLogin"></label>
+<button class="primary" onclick="addProfessor()">Cadastrar professor</button>
+</div></div>
+<table><thead><tr><th>ID</th><th>Professor</th><th>Login</th><th>Status</th><th>Ação</th></tr></thead><tbody id="profsBody"></tbody></table>
+</section>
+
+<section id="turmas">
+<h2>Turmas</h2>
+<div class="card"><div class="row">
+<label>Nome<input id="tNome"></label>
+<label>Modalidade<select id="tMod"></select></label>
+<label>Professor<select id="tProf"></select></label>
+<label>Horário<input id="tHorario" placeholder="Ex.: Ter/Qui 18:00"></label>
+<button class="primary" onclick="addTurma()">Cadastrar turma</button>
+</div></div>
+<table><thead><tr><th>ID</th><th>Turma</th><th>Modalidade</th><th>Professor</th><th>Horário</th><th>Status</th></tr></thead><tbody id="turmasBody"></tbody></table>
+</section>
+
+<section id="vinculos">
+<h2>Vínculos aluno × turma</h2>
+<div class="card"><div class="row">
+<label>Aluno<select id="vAluno"></select></label>
+<label>Turma<select id="vTurma"></select></label>
+<label>Início<input type="date" id="vInicio"></label>
+<label>Fim<input type="date" id="vFim"></label>
+<button class="primary" onclick="addVinculo()">Vincular</button>
+</div></div>
+<table><thead><tr><th>Aluno</th><th>Turma</th><th>Início</th><th>Fim</th><th>Status</th><th>Ação</th></tr></thead><tbody id="vincBody"></tbody></table>
+</section>
+
+<section id="testes">
+<h2>Matriz de homologação — Fase 1</h2>
+<p class="muted">Nenhum teste é aprovado automaticamente. O status deve refletir evidência real de execução.</p>
+<table><thead><tr><th>ID</th><th>Teste</th><th>Resultado esperado</th><th>Status</th><th>Ação</th></tr></thead><tbody id="testsBody"></tbody></table>
+</section>
+
+<section id="auditoria">
+<h2>Auditoria</h2>
+<table><thead><tr><th>Data/hora</th><th>Ação</th><th>Detalhe</th></tr></thead><tbody id="auditBody"></tbody></table>
+</section>
+</main>
+<script>
+const KEY='cabana_frequencia_v13';
+const blank={seq:0,alunos:[],modalidades:[],professores:[],turmas:[],vinculos:[],auditoria:[],testes:[]};
+let db=JSON.parse(localStorage.getItem(KEY)||'null')||blank;
+if(!db.testes.length){
+const nomes=[
+['CT-001','Cadastro de aluno','Aluno salvo com matrícula sequencial única'],
+['CT-002','Edição do aluno','Alteração preserva matrícula e histórico'],
+['CT-003','Inativação de aluno','Aluno sai das novas operações sem apagar histórico'],
+['CT-004','Reativação de aluno','Aluno volta ao fluxo operacional'],
+['CT-005','Cadastro de modalidade','Modalidade criada e disponível'],
+['CT-006','Cadastro de turma','Turma criada com modalidade, professor e horário'],
+['CT-007','Alteração de turma','Alteração reflete sem perder histórico'],
+['CT-008','Inativação de turma','Turma inativa preserva histórico'],
+['CT-009','Vínculo aluno/turma','Vínculo criado com data inicial'],
+['CT-010','Encerramento do vínculo','Data final respeitada'],
+['CT-011','Transferência de turma','Novo vínculo sem destruir o anterior'],
+['CT-012','Sobreposição de vínculos','Sistema impede períodos incompatíveis']
+];
+db.testes=nomes.map(x=>({id:x[0],nome:x[1],esperado:x[2],status:'PENDENTE'}));save();
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function audit(a,d){db.auditoria.unshift({dt:new Date().toLocaleString('pt-BR'),a,d})}
+function show(id){document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');render()}
+function nextMat(){db.seq++;return String(db.seq).padStart(6,'0')}
+function addAluno(){let n=aNome.value.trim();if(!n)return alert('Informe o nome.');let mat=nextMat();db.alunos.push({mat,n,cpf:aCpf.value.trim(),ativo:true});audit('CADASTRO ALUNO',mat+' — '+n);aNome.value='';aCpf.value='';save()}
+function toggleAluno(i){db.alunos[i].ativo=!db.alunos[i].ativo;audit(db.alunos[i].ativo?'REATIVAÇÃO':'INATIVAÇÃO','Aluno '+db.alunos[i].mat);save()}
+function addModalidade(){let n=mNome.value.trim();if(!n)return;db.modalidades.push({id:db.modalidades.length+1,n,ativo:true});audit('CADASTRO MODALIDADE',n);mNome.value='';save()}
+function addProfessor(){let n=pNome.value.trim();if(!n)return;db.professores.push({id:db.professores.length+1,n,login:pLogin.value.trim(),ativo:true});audit('CADASTRO PROFESSOR',n);pNome.value='';pLogin.value='';save()}
+function addTurma(){let n=tNome.value.trim();if(!n||!tMod.value||!tProf.value)return alert('Preencha turma, modalidade e professor.');db.turmas.push({id:db.turmas.length+1,n,mod:+tMod.value,prof:+tProf.value,hor:tHorario.value,ativo:true});audit('CADASTRO TURMA',n);tNome.value='';tHorario.value='';save()}
+function addVinculo(){let al=+vAluno.value,tr=+vTurma.value;if(!al||!tr||!vInicio.value)return alert('Informe aluno, turma e início.');let novo={id:db.vinculos.length+1,al,tr,inicio:vInicio.value,fim:vFim.value||null,ativo:true};let conflito=db.vinculos.some(v=>v.al===al&&v.ativo&&(!v.fim||!novo.fim||v.fim>=novo.inicio)&&(novo.fim||!v.fim||novo.fim>=v.inicio));if(conflito)return alert('Sobreposição de vínculo detectada. Corrija as datas antes de continuar.');db.vinculos.push(novo);audit('VÍNCULO',`Aluno ${al} → Turma ${tr}`);save()}
+function endVinc(i){let d=prompt('Informe a data final (AAAA-MM-DD):',new Date().toISOString().slice(0,10));if(!d)return;db.vinculos[i].fim=d;db.vinculos[i].ativo=false;audit('ENCERRAMENTO VÍNCULO','ID '+db.vinculos[i].id+' em '+d);save()}
+function setTest(i,s){db.testes[i].status=s;audit('TESTE '+db.testes[i].id,s);save()}
+function render(){
+kAlunos.textContent=db.alunos.filter(x=>x.ativo).length;kMods.textContent=db.modalidades.filter(x=>x.ativo).length;kProfs.textContent=db.professores.filter(x=>x.ativo).length;kTurmas.textContent=db.turmas.filter(x=>x.ativo).length;kVinc.textContent=db.vinculos.filter(x=>x.ativo).length;kTests.textContent=db.testes.filter(x=>x.status==='APROVADO').length+'/12';
+alunosBody.innerHTML=db.alunos.map((x,i)=>`<tr><td><b>${x.mat}</b></td><td>${x.n}</td><td>${x.cpf||'-'}</td><td>${x.ativo?'Ativo':'Inativo'}</td><td><button class="secondary" onclick="toggleAluno(${i})">${x.ativo?'Inativar':'Reativar'}</button></td></tr>`).join('');
+modsBody.innerHTML=db.modalidades.map((x,i)=>`<tr><td>${x.id}</td><td>${x.n}</td><td>${x.ativo?'Ativa':'Inativa'}</td><td><button class="secondary" onclick="db.modalidades[${i}].ativo=!db.modalidades[${i}].ativo;audit('STATUS MODALIDADE',x.n);save()">Alternar</button></td></tr>`).join('');
+profsBody.innerHTML=db.professores.map(x=>`<tr><td>${x.id}</td><td>${x.n}</td><td>${x.login||'-'}</td><td>${x.ativo?'Ativo':'Inativo'}</td><td>-</td></tr>`).join('');
+tMod.innerHTML='<option value="">Selecione</option>'+db.modalidades.filter(x=>x.ativo).map(x=>`<option value="${x.id}">${x.n}</option>`).join('');
+tProf.innerHTML='<option value="">Selecione</option>'+db.professores.filter(x=>x.ativo).map(x=>`<option value="${x.id}">${x.n}</option>`).join('');
+turmasBody.innerHTML=db.turmas.map(x=>`<tr><td>${x.id}</td><td>${x.n}</td><td>${db.modalidades.find(m=>m.id===x.mod)?.n||'-'}</td><td>${db.professores.find(p=>p.id===x.prof)?.n||'-'}</td><td>${x.hor||'-'}</td><td>${x.ativo?'Ativa':'Inativa'}</td></tr>`).join('');
+vAluno.innerHTML='<option value="">Selecione</option>'+db.alunos.filter(x=>x.ativo).map((x,i)=>`<option value="${db.alunos.indexOf(x)}">${x.mat} — ${x.n}</option>`).join('');
+vTurma.innerHTML='<option value="">Selecione</option>'+db.turmas.filter(x=>x.ativo).map(x=>`<option value="${x.id}">${x.n}</option>`).join('');
+vincBody.innerHTML=db.vinculos.map((x,i)=>`<tr><td>${db.alunos[x.al]?.n||'-'}</td><td>${db.turmas.find(t=>t.id===x.tr)?.n||'-'}</td><td>${x.inicio}</td><td>${x.fim||'Atual'}</td><td>${x.ativo?'Ativo':'Encerrado'}</td><td>${x.ativo?`<button class="secondary" onclick="endVinc(${i})">Encerrar</button>`:'-'}</td></tr>`).join('');
+testsBody.innerHTML=db.testes.map((x,i)=>`<tr><td>${x.id}</td><td>${x.nome}</td><td>${x.esperado}</td><td><span class="badge ${x.status.toLowerCase()}">${x.status}</span></td><td><button class="secondary" onclick="setTest(${i},'APROVADO')">Aprovar</button> <button class="secondary" onclick="setTest(${i},'REPROVADO')">Reprovar</button> <button class="secondary" onclick="setTest(${i},'BLOQUEADO')">Bloquear</button></td></tr>`).join('');
+auditBody.innerHTML=db.auditoria.map(x=>`<tr><td>${x.dt}</td><td>${x.a}</td><td>${x.d}</td></tr>`).join('');
+}
+render();
+</script>
+</body></html>
