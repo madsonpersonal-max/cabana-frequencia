@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cabana Frequência — V1.3</title>
+<title>Cabana Frequência — V1.4</title>
 <style>
 :root{--tc:#c96f52;--tc-dark:#8f4938;--bg:#f7f3f0;--card:#fff;--text:#2b2928;--muted:#716b67;--ok:#2e7d32;--warn:#b26a00;--bad:#b3261e;--border:#e4d8d1}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -28,7 +28,7 @@ th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-siz
 <body>
 <header>
   <div class="brand">CABANA CLUBE 40 ANOS</div>
-  <div class="sub">Cabana Frequência — V1.3 • Homologação Fase 1</div>
+  <div class="sub">Cabana Frequência — V1.4 • Homologação Fase 1</div>
 </header>
 <nav>
   <button onclick="show('dashboard')">Dashboard</button>
@@ -51,7 +51,7 @@ th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-siz
 <div class="card">Vínculos ativos<div class="kpi" id="kVinc">0</div></div>
 <div class="card">Testes aprovados<div class="kpi" id="kTests">0/12</div></div>
 </div>
-<div class="alert"><b>Regra:</b> Fase 2 só será liberada quando CT-001 a CT-012 estiverem 100% APROVADOS.</div>
+<div class="alert"><b>Regra:</b> Fase 2 só será liberada quando CT-001 a CT-012 estiverem 100% APROVADOS. Os testes são sequenciais e exigem evidência.</div><div class="alert"><b>Correção V1.4:</b> cadastro de aluno agora possui <b>Editar</b>. A matrícula continua imutável.</div>
 </section>
 
 <section id="alunos">
@@ -61,7 +61,7 @@ th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-siz
 <label>CPF<input id="aCpf"></label>
 <button class="primary" onclick="addAluno()">Cadastrar e gerar matrícula</button>
 </div></div>
-<table><thead><tr><th>Matrícula</th><th>Nome</th><th>CPF</th><th>Status</th><th>Ação</th></tr></thead><tbody id="alunosBody"></tbody></table>
+<table><thead><tr><th>Matrícula</th><th>Nome</th><th>CPF</th><th>Status</th><th>Evidência</th><th>Data</th><th>Ação</th></tr></thead><tbody id="alunosBody"></tbody></table>
 </section>
 
 <section id="modalidades">
@@ -70,7 +70,7 @@ th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-siz
 <label>Nome<input id="mNome"></label>
 <button class="primary" onclick="addModalidade()">Cadastrar modalidade</button>
 </div></div>
-<table><thead><tr><th>ID</th><th>Modalidade</th><th>Status</th><th>Ação</th></tr></thead><tbody id="modsBody"></tbody></table>
+<table><thead><tr><th>ID</th><th>Modalidade</th><th>Status</th><th>Evidência</th><th>Data</th><th>Ação</th></tr></thead><tbody id="modsBody"></tbody></table>
 </section>
 
 <section id="professores">
@@ -80,7 +80,7 @@ th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-siz
 <label>Login<input id="pLogin"></label>
 <button class="primary" onclick="addProfessor()">Cadastrar professor</button>
 </div></div>
-<table><thead><tr><th>ID</th><th>Professor</th><th>Login</th><th>Status</th><th>Ação</th></tr></thead><tbody id="profsBody"></tbody></table>
+<table><thead><tr><th>ID</th><th>Professor</th><th>Login</th><th>Status</th><th>Evidência</th><th>Data</th><th>Ação</th></tr></thead><tbody id="profsBody"></tbody></table>
 </section>
 
 <section id="turmas">
@@ -104,13 +104,13 @@ th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-siz
 <label>Fim<input type="date" id="vFim"></label>
 <button class="primary" onclick="addVinculo()">Vincular</button>
 </div></div>
-<table><thead><tr><th>Aluno</th><th>Turma</th><th>Início</th><th>Fim</th><th>Status</th><th>Ação</th></tr></thead><tbody id="vincBody"></tbody></table>
+<table><thead><tr><th>Aluno</th><th>Turma</th><th>Início</th><th>Fim</th><th>Status</th><th>Evidência</th><th>Data</th><th>Ação</th></tr></thead><tbody id="vincBody"></tbody></table>
 </section>
 
 <section id="testes">
 <h2>Matriz de homologação — Fase 1</h2>
 <p class="muted">Nenhum teste é aprovado automaticamente. O status deve refletir evidência real de execução.</p>
-<table><thead><tr><th>ID</th><th>Teste</th><th>Resultado esperado</th><th>Status</th><th>Ação</th></tr></thead><tbody id="testsBody"></tbody></table>
+<table><thead><tr><th>ID</th><th>Teste</th><th>Resultado esperado</th><th>Status</th><th>Evidência</th><th>Data</th><th>Ação</th></tr></thead><tbody id="testsBody"></tbody></table>
 </section>
 
 <section id="auditoria">
@@ -119,9 +119,11 @@ th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-siz
 </section>
 </main>
 <script>
-const KEY='cabana_frequencia_v13';
+const KEY='cabana_frequencia_v14';
+const OLD_KEY='cabana_frequencia_v13';
 const blank={seq:0,alunos:[],modalidades:[],professores:[],turmas:[],vinculos:[],auditoria:[],testes:[]};
-let db=JSON.parse(localStorage.getItem(KEY)||'null')||blank;
+let db=JSON.parse(localStorage.getItem(KEY)||'null');
+if(!db){ const old=JSON.parse(localStorage.getItem(OLD_KEY)||'null'); db=old ? {...old, testes:[]} : {...blank}; }
 if(!db.testes.length){
 const nomes=[
 ['CT-001','Cadastro de aluno','Aluno salvo com matrícula sequencial única'],
@@ -143,6 +145,16 @@ function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
 function audit(a,d){db.auditoria.unshift({dt:new Date().toLocaleString('pt-BR'),a,d})}
 function show(id){document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');render()}
 function nextMat(){db.seq++;return String(db.seq).padStart(6,'0')}
+function editAluno(i){
+  const a=db.alunos[i];
+  const novoNome=prompt('Nome do aluno:',a.n);
+  if(novoNome===null)return;
+  const novoCpf=prompt('CPF:',a.cpf||'');
+  if(novoCpf===null)return;
+  const antes={nome:a.n,cpf:a.cpf||''};
+  a.n=novoNome.trim()||a.n; a.cpf=novoCpf.trim();
+  audit('EDIÇÃO ALUNO',`${a.mat} — antes: ${antes.nome} / depois: ${a.n}`); save();
+}
 function addAluno(){let n=aNome.value.trim();if(!n)return alert('Informe o nome.');let mat=nextMat();db.alunos.push({mat,n,cpf:aCpf.value.trim(),ativo:true});audit('CADASTRO ALUNO',mat+' — '+n);aNome.value='';aCpf.value='';save()}
 function toggleAluno(i){db.alunos[i].ativo=!db.alunos[i].ativo;audit(db.alunos[i].ativo?'REATIVAÇÃO':'INATIVAÇÃO','Aluno '+db.alunos[i].mat);save()}
 function addModalidade(){let n=mNome.value.trim();if(!n)return;db.modalidades.push({id:db.modalidades.length+1,n,ativo:true});audit('CADASTRO MODALIDADE',n);mNome.value='';save()}
@@ -150,10 +162,16 @@ function addProfessor(){let n=pNome.value.trim();if(!n)return;db.professores.pus
 function addTurma(){let n=tNome.value.trim();if(!n||!tMod.value||!tProf.value)return alert('Preencha turma, modalidade e professor.');db.turmas.push({id:db.turmas.length+1,n,mod:+tMod.value,prof:+tProf.value,hor:tHorario.value,ativo:true});audit('CADASTRO TURMA',n);tNome.value='';tHorario.value='';save()}
 function addVinculo(){let al=+vAluno.value,tr=+vTurma.value;if(!al||!tr||!vInicio.value)return alert('Informe aluno, turma e início.');let novo={id:db.vinculos.length+1,al,tr,inicio:vInicio.value,fim:vFim.value||null,ativo:true};let conflito=db.vinculos.some(v=>v.al===al&&v.ativo&&(!v.fim||!novo.fim||v.fim>=novo.inicio)&&(novo.fim||!v.fim||novo.fim>=v.inicio));if(conflito)return alert('Sobreposição de vínculo detectada. Corrija as datas antes de continuar.');db.vinculos.push(novo);audit('VÍNCULO',`Aluno ${al} → Turma ${tr}`);save()}
 function endVinc(i){let d=prompt('Informe a data final (AAAA-MM-DD):',new Date().toISOString().slice(0,10));if(!d)return;db.vinculos[i].fim=d;db.vinculos[i].ativo=false;audit('ENCERRAMENTO VÍNCULO','ID '+db.vinculos[i].id+' em '+d);save()}
-function setTest(i,s){db.testes[i].status=s;audit('TESTE '+db.testes[i].id,s);save()}
+function setTest(i,s){
+  if(i>0 && db.testes[i-1].status!=='APROVADO') return alert('Teste bloqueado. O teste anterior precisa estar APROVADO antes de avançar.');
+  const ev=prompt('Descreva a evidência observada para este teste:');
+  if(!ev || !ev.trim()) return alert('A evidência é obrigatória.');
+  db.testes[i].status=s; db.testes[i].evidencia=ev.trim(); db.testes[i].data=new Date().toLocaleString('pt-BR'); db.testes[i].responsavel='Homologação';
+  audit('TESTE '+db.testes[i].id,`${s} — ${ev.trim()}`); save();
+}
 function render(){
 kAlunos.textContent=db.alunos.filter(x=>x.ativo).length;kMods.textContent=db.modalidades.filter(x=>x.ativo).length;kProfs.textContent=db.professores.filter(x=>x.ativo).length;kTurmas.textContent=db.turmas.filter(x=>x.ativo).length;kVinc.textContent=db.vinculos.filter(x=>x.ativo).length;kTests.textContent=db.testes.filter(x=>x.status==='APROVADO').length+'/12';
-alunosBody.innerHTML=db.alunos.map((x,i)=>`<tr><td><b>${x.mat}</b></td><td>${x.n}</td><td>${x.cpf||'-'}</td><td>${x.ativo?'Ativo':'Inativo'}</td><td><button class="secondary" onclick="toggleAluno(${i})">${x.ativo?'Inativar':'Reativar'}</button></td></tr>`).join('');
+alunosBody.innerHTML=db.alunos.map((x,i)=>`<tr><td><b>${x.mat}</b></td><td>${x.n}</td><td>${x.cpf||'-'}</td><td>${x.ativo?'Ativo':'Inativo'}</td><td><button class="secondary" onclick="editAluno(${i})">Editar</button> <button class="secondary" onclick="toggleAluno(${i})">${x.ativo?'Inativar':'Reativar'}</button></td></tr>`).join('');
 modsBody.innerHTML=db.modalidades.map((x,i)=>`<tr><td>${x.id}</td><td>${x.n}</td><td>${x.ativo?'Ativa':'Inativa'}</td><td><button class="secondary" onclick="db.modalidades[${i}].ativo=!db.modalidades[${i}].ativo;audit('STATUS MODALIDADE',x.n);save()">Alternar</button></td></tr>`).join('');
 profsBody.innerHTML=db.professores.map(x=>`<tr><td>${x.id}</td><td>${x.n}</td><td>${x.login||'-'}</td><td>${x.ativo?'Ativo':'Inativo'}</td><td>-</td></tr>`).join('');
 tMod.innerHTML='<option value="">Selecione</option>'+db.modalidades.filter(x=>x.ativo).map(x=>`<option value="${x.id}">${x.n}</option>`).join('');
@@ -162,7 +180,7 @@ turmasBody.innerHTML=db.turmas.map(x=>`<tr><td>${x.id}</td><td>${x.n}</td><td>${
 vAluno.innerHTML='<option value="">Selecione</option>'+db.alunos.filter(x=>x.ativo).map((x,i)=>`<option value="${db.alunos.indexOf(x)}">${x.mat} — ${x.n}</option>`).join('');
 vTurma.innerHTML='<option value="">Selecione</option>'+db.turmas.filter(x=>x.ativo).map(x=>`<option value="${x.id}">${x.n}</option>`).join('');
 vincBody.innerHTML=db.vinculos.map((x,i)=>`<tr><td>${db.alunos[x.al]?.n||'-'}</td><td>${db.turmas.find(t=>t.id===x.tr)?.n||'-'}</td><td>${x.inicio}</td><td>${x.fim||'Atual'}</td><td>${x.ativo?'Ativo':'Encerrado'}</td><td>${x.ativo?`<button class="secondary" onclick="endVinc(${i})">Encerrar</button>`:'-'}</td></tr>`).join('');
-testsBody.innerHTML=db.testes.map((x,i)=>`<tr><td>${x.id}</td><td>${x.nome}</td><td>${x.esperado}</td><td><span class="badge ${x.status.toLowerCase()}">${x.status}</span></td><td><button class="secondary" onclick="setTest(${i},'APROVADO')">Aprovar</button> <button class="secondary" onclick="setTest(${i},'REPROVADO')">Reprovar</button> <button class="secondary" onclick="setTest(${i},'BLOQUEADO')">Bloquear</button></td></tr>`).join('');
+testsBody.innerHTML=db.testes.map((x,i)=>`<tr><td>${x.id}</td><td>${x.nome}</td><td>${x.esperado}</td><td><span class="badge ${x.status.toLowerCase()}">${x.status}</span></td><td class="small">${x.evidencia||'-'}</td><td class="small">${x.data||'-'}</td><td><button class="secondary" onclick="setTest(${i},'APROVADO')">Aprovar</button> <button class="secondary" onclick="setTest(${i},'REPROVADO')">Reprovar</button> <button class="secondary" onclick="setTest(${i},'BLOQUEADO')">Bloquear</button></td></tr>`).join('');
 auditBody.innerHTML=db.auditoria.map(x=>`<tr><td>${x.dt}</td><td>${x.a}</td><td>${x.d}</td></tr>`).join('');
 }
 render();
